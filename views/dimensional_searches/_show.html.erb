@@ -1,0 +1,85 @@
+<p>Found <%= springs.count %> springs</p>
+
+
+<table class="results-table" id="dimensional-search-results">
+  <thead>
+  <tr>
+    <th>PN</th>
+    <th>Description</th>
+    <th>lvs</th>
+    <th>Width</th>
+    <th>Arch Height</th>
+    <th>SE Length</th>
+    <th>LE Length</th>
+    <th>SE Bushing</th>
+    <th>LE Bushing</th>
+    <th>Location</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% springs.each do |spring| %>
+    <tr class="<%= cycle("odd", "even") -%>">
+
+      <td>
+        <%#= link_to spring.pn, spring, class: " item-pn pn-link" %>
+
+        <%= link_to spring.pn, spring, class: "item-pn pn-link",
+          data: {id: spring.id, item_class: spring.class.to_s.tableize } %>
+
+        <%#= link_to spring.pn, spring, class: "pn-link", data: {pn: spring.pn.parameterize} %>
+        <%#= render "shared/info_box", part: spring %>
+
+
+
+
+
+      </td>
+
+      <td><%= spring.description %></td>
+      <td><%= spring.lvs %></td>
+      <td><%= spring.width %></td>
+      <td><%= spring.spring_datum.arch %></td>
+      <td><%= spring.spring_datum.se_dim %></td>
+      <td><%= spring.spring_datum.le_dim %></td>
+      <td><%= spring.spring_datum.se_end %></td>
+      <td><%= spring.spring_datum.le_end %></td>
+      <td><%= spring.location %></td>
+    </tr>
+  <% end %>
+  </tbody>
+
+</table>
+
+<div class="apple-pagination">
+  <%= will_paginate(springs) %>
+</div>
+
+<%#= debug params %>
+
+<%#= render "shared/info_box_script" %>
+
+<script>
+$(document).ready(function(){
+//  $('#dimensional-search-results').DataTable({
+//    paging: false,
+//    searching: false
+//  });
+
+
+
+  // Opens part number show page in modal window
+  $(".item-pn").click(function(e) {
+    e.preventDefault();
+
+    var itemID = $(this).attr("data-id");
+    var itemClass = $(this).attr("data-item-class");
+    var url = "/" + itemClass + "/" + itemID + "?layout=no"
+
+    $.get(url , function(data){
+      modal.open({content: data, width: "90%"});
+    });
+  });
+});
+
+</script>

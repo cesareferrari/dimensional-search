@@ -1,0 +1,117 @@
+<div class="header-with-info">
+  <h1>Dimensional Spring Search</h1>
+  <div class="info-notice">
+  Information is provided as reference only. It is available to you 'as is'
+  without any guaranty or warranty of any kind. Although accuracy is important to
+  us, Triangle shall have no responsibility for errors or omissions contained in
+  this information, nor shall Triangle have any responsibility for any results
+  obtained from the use of information provided.
+  </div>
+</div>
+
+
+<div class="filter">
+  <h2>
+    <span>Filter</span>
+    <span>
+      <%= link_to 'Conversion chart', '', class: 'filter-button', id: 'conversion-chart' %>
+      <%= link_to 'Measuring a Spring', '/assets/pdf/TSS_Measuring_a_Spring.pdf', class: 'filter-button' %>
+    </span>
+  </h2>
+
+  <form id="dimensional-search-form" action="/dimensional_search" data-remote="true" autocomplete="off">
+
+  <div class="filter-leaves">
+      <label for="lvs">Number of Leaves</label>
+      <%= select_tag :lvs, options_for_select(TriangleSpring.all_leaves, @lvs) %>
+  </div>
+
+    <div class="filter-inputs">
+      <div class="filter-input">
+        <span>WIDTH</span>
+        <%= text_field_tag :width, @width, placeholder: 'min' %>
+        <%= text_field_tag :width_max, @width_max, placeholder: 'max' %>
+      </div>
+
+      <div class="filter-input">
+        <span>ARCH HEIGHT<br>(Decimal)</span>
+        <%= text_field_tag :arch, @arch, placeholder: 'min' %>
+        <%= text_field_tag :arch_max, @arch_max, placeholder: 'max' %>
+      </div>
+
+      <div class="filter-input">
+        <span>SE LENGTH<br>(Decimal)</span>
+        <%= text_field_tag :se_dim, @se_dim, placeholder: 'min' %>
+        <%= text_field_tag :se_max, @se_max, placeholder: 'max' %>
+      </div>
+
+      <div class="filter-input">
+        <span>LE LENGTH<br>(Decimal)</span>
+        <%= text_field_tag :le_dim, @le_dim, placeholder: 'min' %>
+        <%= text_field_tag :le_max, @le_max, placeholder: 'max' %>
+      </div>
+
+      <div class="filter-input">
+        <%
+          locations = [
+            ['Choose...', ''],
+            ['Front', 'Front'],
+            ['Rear', 'Rear'] ]
+        %>
+        <span>LOCATION</span>
+        <%= select_tag :location, options_for_select(locations, @location) %>
+      </div>
+
+      <div class="filter-input">
+        <span>SORT BY</span>
+        <%= select_tag :sort, options_for_select(TriangleSpring.dimensional_sort_options, @sort) %>
+      </div>
+
+
+    </div>
+    <input id="apply-filter" type="submit" value="Apply filter">
+    <button class='clear-button' id="clear-filter">Clear filter</button>
+  </form>
+
+</div>
+
+<div id="results">
+  <% if @springs.present? %>
+    <%= render 'show', springs: @springs %>
+  <% else %>
+    <%= render 'no_springs' %>
+  <% end %>
+</div>
+
+<%= render 'conversion_table' %>
+
+<script>
+
+$(function() {
+  $('#lvs').change(function() {
+    this.form.submit();
+  })
+
+  $('#clear-filter').click(function() {
+    $('#dimensional-search-form').trigger('reset');
+    $('#lvs').val(''); //If I want to clear the leaves value...
+    this.form.submit();
+  })
+
+  let tableContainer = document.getElementById('conversion-table');
+
+  $('#conversion-chart').click(function(event) {
+    event.preventDefault();
+    tableContainer.classList.remove('hide-conversion');
+    tableContainer.classList.add('show-conversion');
+    modal.open({content: tableContainer, width: "80%"});
+  });
+
+  $('#measuring-spring').click(function(event) {
+    event.preventDefault();
+    window.location = '/assets/TSS_Measuring_a_Spring.pdf';
+  });
+})
+</script>
+
+<%= render 'pages/modal_script' %>
