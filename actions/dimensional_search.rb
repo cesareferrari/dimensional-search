@@ -40,11 +40,7 @@ class DimensionalSearch
   end
 
   def sort
-    if @sort
-      @sort
-    else
-      'pn'
-    end
+    @sort ? @sort : 'pn'
   end
 
   def spring_options
